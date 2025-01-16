@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="list"></div>
+
+    <script>
+        const observer = new PerformanceObserver((list) => {
+            const lhPatterns = list
+                .getEntries()
+                .filter((entry) => entry.name.includes("http") && entry.startTime < 100);
+            if (lhPatterns > 10) {
+                console.log("debug: potential lh detected");
+            }
+            for (const entry of list.getEntries()) {
+                this.totalBusyTime += entry.duration;
+                this.lastTaskTime = performance.now();
+                console.log("debug:entry ", entry.fetchStart);
+                const stat = document.createElement("p");
+                stat.innerText = `${entry.fetchStart}`;
+
+                document.getElementById('list').appendChild(stat);
+                Ï;
+            }
+        });
+
+        observer.observe({ entryTypes: ["navigation"] });
+    </script>
+</body>
+
+</html>
