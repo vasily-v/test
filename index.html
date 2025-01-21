@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 
-<body>
+<body style="font-size:32px">
     <div id="list"></div>
 
     <script>
@@ -26,8 +26,10 @@
                 stat.innerText = `${entry.fetchStart}`;
 
                 document.getElementById('list').appendChild(stat);
-                Ï;
             }
+            const connectionInfo = document.createElement('p');
+            connectionInfo = JSON.stringify(navigator.connection, null, 2);Ï
+            document.getElementById('list').appendChild(connectionInfo);
         });
 
         observer.observe({ entryTypes: ["navigation"] });
