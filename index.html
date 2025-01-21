@@ -27,9 +27,16 @@
 
                 document.getElementById('list').appendChild(stat);
             }
-            const connectionInfo = document.createElement('p');
-            connectionInfo.innerText = window.navigator.connection;
-            document.getElementById('list').appendChild(connectionInfo);
+            const connection = navigator.connection;
+        const connectionData = {
+            effectiveType: connection.effectiveType,
+            downlink: connection.downlink,
+            rtt: connection.rtt,
+            saveData: connection.saveData,
+            type: connection.type
+        };
+        const connectionInfo = JSON.stringify(connectionData, null, 2);
+        document.body.insertAdjacentText('beforeend', connectionInfo);
         });
 
         observer.observe({ entryTypes: ["navigation"] });
