@@ -28,7 +28,7 @@
                 document.getElementById('list').appendChild(stat);
             }
             const connectionInfo = document.createElement('p');
-            connectionInfo = JSON.stringify(navigator.connection, null, 2);Ï
+            connectionInfo.innerText = JSON.stringify(navigator.connection, null, 2);Ï
             document.getElementById('list').appendChild(connectionInfo);
         });
 
