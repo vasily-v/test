@@ -11,23 +11,6 @@
     <div id="list"></div>
 
     <script>
-        const observer = new PerformanceObserver((list) => {
-            const lhPatterns = list
-                .getEntries()
-                .filter((entry) => entry.name.includes("http") && entry.startTime < 100);
-            if (lhPatterns > 10) {
-                console.log("debug: potential lh detected");
-            }
-            for (const entry of list.getEntries()) {
-                this.totalBusyTime += entry.duration;
-                this.lastTaskTime = performance.now();
-                console.log("debug:entry ", entry.fetchStart);
-                const stat = document.createElement("p");
-                stat.innerText = `${entry.fetchStart}`;
-
-                document.getElementById('list').appendChild(stat);
-            }
-            const connection = navigator.connection;
         const connectionData = {
             effectiveType: connection.effectiveType,
             downlink: connection.downlink,
@@ -36,6 +19,14 @@
             type: connection.type
         };
         const connectionInfo = JSON.stringify(connectionData, null, 2);
+        const checkCr = () =>{
+            const {rtt} = connectionData;
+            if(rtt===undefined){
+                return true;
+            }
+            return rtt>0;
+        }
+         document.body.insertAdjacentText('afterbegin', checkCr() ? 'client':'google');
         document.body.insertAdjacentText('beforeend', connectionInfo);
         });
 
