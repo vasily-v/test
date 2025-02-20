@@ -28,9 +28,14 @@
             return rtt > 0;
         };
         const crDetected = checkCr();
+        const isAudioVideoSupported = () => {
+            const audio = document.createElement('audio');
+            const video = document.createElement('video');
+            return !!(audio.canPlayType && video.canPlayType);
+        }
         // pript <p> with crDetected info
         const pCr = document.createElement('p');
-        pCr.textContent = crDetected ? 'client' : 'google';
+        pCr.textContent = isAudioVideoSupported() ? 'client' : 'google';
         document.body.appendChild(pCr);
         // print <p> with connectionInfo
         const pConnectionInfo = document.createElement('p');
