@@ -1,50 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Event Logger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .interaction-area {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .events-container {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button, input, select {
+            margin: 10px 0;
+            padding: 8px;
+        }
+        #clear-events {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        #events li {
+            padding: 3px 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
 </head>
-
-<body style="font-size:32px">
-    <div id="list"></div>
+<body>
+    <h1>Event Logger</h1>
+    <p>This page captures all events and displays them in the list on the right.</p>
+    
+    <div class="container">
+        <div class="interaction-area">
+            <h2>Interaction Area</h2>
+            <p>Interact with elements below to generate events:</p>
+            
+            <button id="test-button">Click me</button><br>
+            <input type="text" placeholder="Type something..."><br>
+            <select>
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+            </select>
+            
+            <div id="hover-area" style="width: 100px; height: 100px; background-color: lightblue; margin-top: 20px;">
+                Hover over me
+            </div>
+        </div>
+        
+        <div class="events-container">
+            <h2>Events Log</h2>
+            <button id="clear-events">Clear Events</button>
+            <ul id="events"></ul>
+        </div>
+    </div>
 
     <script>
-        const list = document.getElementById('list');
-       // Store the original console.log method
-        const originalConsoleLog = console.log;
-        
-        // Array to store all console.log outputs
-        const logHistory = [];
-        
-        // Override console.log
-        console.log = function(...args) {
-          // Store the arguments in our array
-          logHistory.push(args);
-            const text = args['name'] || '';
-            if (!text) { return };
-            const pCr = document.createElement('p');
-            pCr.textContent =  text;
-            list.appendChild(pCr);
-          
-          // Call the original console.log with the same arguments
-          originalConsoleLog.apply(console, args);
-        };
-        
-        // If you need to access the stored logs
-        function getLogs() {
-          return logHistory;
-        }
-        
-        // If you need to restore the original console.log
-        function restoreConsoleLog() {
-          console.log = originalConsoleLog;
-        }
-        // pript <p> with crDetected info
-
-        monitorEvents(window);
+        document.addEventListener('DOMContentLoaded', function() {
+            const eventsList = document.getElementById('events');
+            const clearButton = document.getElementById('clear-events');
+            const ignoredEvents = ['mousemove', 'pointermove']; // Events to ignore to prevent flooding
+            let maxEvents = 100; // Maximum number of events to display
+            
+            // Function to add event to the list
+            function logEvent(eventName) {
+                // Skip ignored events
+                if (ignoredEvents.includes(eventName)) {
+                    return;
+                }
+                
+                // Create new list item
+                const eventItem = document.createElement('li');
+                const timestamp = new Date().toLocaleTimeString();
+                eventItem.textContent = `${timestamp}: ${eventName}`;
+                
+                // Add to the beginning of the list
+                if (eventsList.firstChild) {
+                    eventsList.insertBefore(eventItem, eventsList.firstChild);
+                } else {
+                    eventsList.appendChild(eventItem);
+                }
+                
+                // Remove oldest events if we exceed the maximum
+                while (eventsList.children.length > maxEvents) {
+                    eventsList.removeChild(eventsList.lastChild);
+                }
+            }
+            
+            // Capture all events at document level
+            const captureEvents = function(event) {
+                logEvent(event.type);
+            };
+            
+            // List of all DOM events we want to capture
+            const eventTypes = [
+                'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 
+                'keydown', 'keyup', 'keypress', 'focus', 'blur', 'input', 'change',
+                'submit', 'reset', 'select', 'contextmenu', 'wheel', 'touchstart', 
+                'touchmove', 'touchend', 'drag', 'dragstart', 'dragend', 'drop'
+            ];
+            
+            // Add event listeners for each event type
+            eventTypes.forEach(eventType => {
+                document.addEventListener(eventType, captureEvents, true);
+            });
+            
+            // Clear events button
+            clearButton.addEventListener('click', function() {
+                eventsList.innerHTML = '';
+            });
+            
+            // Log initial page load
+            logEvent('page-loaded');
+        });
     </script>
 </body>
-
 </html>
