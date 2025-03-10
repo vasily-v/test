@@ -80,7 +80,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const eventsList = document.getElementById('events');
             const clearButton = document.getElementById('clear-events');
-            const ignoredEvents = ['mousemove', 'pointermove']; // Events to ignore to prevent flooding
+            const ignoredEvents = []; // Events to ignore to prevent flooding
             let maxEvents = 100; // Maximum number of events to display
             
             // Function to add event to the list
@@ -115,7 +115,7 @@
             
             // List of all DOM events we want to capture
             const eventTypes = [
-                'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 
+                'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'mousemove', 'pointermove',
                 'keydown', 'keyup', 'keypress', 'focus', 'blur', 'input', 'change',
                 'submit', 'reset', 'select', 'contextmenu', 'wheel', 'touchstart', 
                 'touchmove', 'touchend', 'drag', 'dragstart', 'dragend', 'drop'
